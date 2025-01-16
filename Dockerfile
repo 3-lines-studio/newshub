@@ -27,6 +27,9 @@ RUN npm ci --include=dev
 # Copy application code
 COPY . .
 
+ARG REDIS_URL
+ARG REDIS_TOKEN
+
 # Build application
 RUN npm run build
 

@@ -1,5 +1,8 @@
 import Parser from "rss-parser";
 import dayjs from "dayjs";
+import { cached } from "./cache";
+import { Readability } from "@mozilla/readability";
+import { JSDOM } from "jsdom";
 
 export type FeedItem = {
   [key: string]: any;
@@ -21,22 +24,25 @@ const reposFeedUrls = [
   "https://mshibanami.github.io/GitHubTrendingRSS/monthly/all.xml",
 ];
 
-export const getNews = async (feedUrls = newsFeedUrls) => {
-  const feeds = await Promise.all(
-    feedUrls.map((url) =>
-      parser
-        .parseURL(url)
-        .catch(() => console.error(new URL(url).host, " failed"))
-    )
-  );
+export const getNews = cached(
+  "news:",
+  async (feedUrls: string[] = newsFeedUrls) => {
+    const feeds = await Promise.all(
+      feedUrls.map((url) =>
+        parser
+          .parseURL(url)
+          .catch(() => console.error(new URL(url).host, " failed"))
+      )
+    );
 
-  return feeds
-    .filter(Boolean)
-    .flatMap((feed) => feed?.items!)
-    .sort((a, b) => (dayjs(a.pubDate).isBefore(b.pubDate) ? 1 : -1));
-};
+    return feeds
+      .filter(Boolean)
+      .flatMap((feed) => feed?.items!)
+      .sort((a, b) => (dayjs(a.pubDate).isBefore(b.pubDate) ? 1 : -1));
+  }
+);
 
-export const getGithubTrending = async () => {
+export const getGithubTrending = cached("gh:", async () => {
   const feeds = await Promise.all(
     reposFeedUrls.map((url) =>
       parser
@@ -56,4 +62,11 @@ export const getGithubTrending = async () => {
   }
 
   return [...feedMap.values()].flatMap((feed) => feed?.items!);
-};
+});
+
+export const preview = cached("preview:", async (url: string) => {
+  const html = await fetch(url).then((r) => r.text());
+  const doc = new JSDOM(html, { url });
+  const reader = new Readability(doc.window.document);
+  return reader.parse();
+});

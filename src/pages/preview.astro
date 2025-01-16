@@ -1,8 +1,7 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import { Readability } from "@mozilla/readability";
-import { JSDOM } from "jsdom";
 import Navbar from "../components/navbar.astro";
+import Layout from "../layouts/Layout.astro";
+import { preview } from "../utils/feed";
 
 const url = Astro.url.searchParams.get("link");
 
@@ -10,10 +9,7 @@ if (!url) {
   return Astro.redirect("/");
 }
 
-const html = await fetch(url).then((r) => r.text());
-const doc = new JSDOM(html, { url });
-const reader = new Readability(doc.window.document);
-const article = reader.parse();
+const article = await preview(url);
 ---
 
 <Layout>
