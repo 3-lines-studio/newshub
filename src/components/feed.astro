@@ -1,0 +1,32 @@
+---
+import dayjs from "dayjs";
+import type { FeedItem } from "../utils/feed";
+
+interface Props {
+  title: string;
+  items: FeedItem[];
+}
+
+const { title, items } = Astro.props;
+---
+
+<main class="space-y-10">
+  <h1>{title}</h1>
+
+  {
+    items.map((item) => (
+      <div class="space-y-1">
+        {item.link && (
+          <a target="_blank" href={`/preview?link=${encodeURI(item.link)}`}>
+            {item.title}
+          </a>
+        )}
+        <div class="flex gap-4">
+          <div>{dayjs(item.pubDate).format("DD MMM")}</div>
+          {item.link && <div>{new URL(item.link).host}</div>}
+        </div>
+        <p class="max-h-40 overflow-hidden">{item.contentSnippet}</p>
+      </div>
+    ))
+  }
+</main>

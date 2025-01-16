@@ -1,0 +1,15 @@
+---
+import Feed from "../components/feed.astro";
+import Layout from "../layouts/Layout.astro";
+import { getNews } from "../utils/feed";
+
+const items = await getNews();
+---
+
+<Layout>
+  <nav class="flex justify-end pb-4">
+    <a href="/github">GitHub</a>
+  </nav>
+
+  <Feed title="News" items={items} />
+</Layout>

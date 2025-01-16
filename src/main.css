@@ -1,0 +1,5 @@
+html,
+body {
+  @apply text-stone-100 bg-stone-900;
+  font-family: Mate, serif;
+}

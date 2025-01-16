@@ -1,0 +1,28 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Readability } from "@mozilla/readability";
+import { JSDOM } from "jsdom";
+
+const url = Astro.url.searchParams.get("link");
+
+if (!url) {
+  return Astro.redirect("/");
+}
+
+const html = await fetch(url).then((r) => r.text());
+const doc = new JSDOM(html, { url });
+const reader = new Readability(doc.window.document);
+const article = reader.parse();
+---
+
+<Layout>
+  <nav class="flex gap-4 justify-end pb-4">
+    <a href="/">News</a>
+    <a href="/github">GitHub</a>
+  </nav>
+
+  <main class="flex flex-col mx-auto my-10 prose lg:prose-xl prose-invert">
+    <h1>{article?.title}</h1>
+    <article set:html={article?.content} />
+  </main>
+</Layout>

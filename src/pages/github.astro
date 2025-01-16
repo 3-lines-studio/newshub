@@ -1,0 +1,15 @@
+---
+import Feed from "../components/feed.astro";
+import Layout from "../layouts/Layout.astro";
+import { getGithubTrending } from "../utils/feed";
+
+const items = await getGithubTrending();
+---
+
+<Layout>
+  <nav class="flex justify-end pb-4">
+    <a href="/">News</a>
+  </nav>
+
+  <Feed title="GitHub Trending" items={items} />
+</Layout>
