@@ -1,0 +1,30 @@
+---
+import Feed from "../../components/feed.astro";
+import Navbar from "../../components/navbar.astro";
+import Layout from "../../layouts/Layout.astro";
+import { getNews } from "../../utils/feed";
+
+const { list = "" } = Astro.params;
+
+if (!list) {
+  return Astro.redirect("/");
+}
+
+const parsedList = atob(list).split(",") as string[];
+const items = await getNews(parsedList);
+---
+
+<Layout>
+  <Navbar />
+
+  {
+    items.length > 0 ? (
+      <Feed title="News" items={items} />
+    ) : (
+      <div>
+        <h3>Invalid feed</h3>
+        <a href="/">Go to home</a>
+      </div>
+    )
+  }
+</Layout>

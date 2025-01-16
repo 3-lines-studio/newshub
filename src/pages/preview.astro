@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import { Readability } from "@mozilla/readability";
 import { JSDOM } from "jsdom";
+import Navbar from "../components/navbar.astro";
 
 const url = Astro.url.searchParams.get("link");
 
@@ -16,10 +17,7 @@ const article = reader.parse();
 ---
 
 <Layout>
-  <nav class="flex gap-4 justify-end pb-4">
-    <a href="/">News</a>
-    <a href="/github">GitHub</a>
-  </nav>
+  <Navbar />
 
   <main class="flex flex-col mx-auto my-10 prose lg:prose-xl prose-invert">
     <h1>{article?.title}</h1>

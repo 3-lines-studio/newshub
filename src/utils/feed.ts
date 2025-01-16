@@ -21,9 +21,9 @@ const reposFeedUrls = [
   "https://mshibanami.github.io/GitHubTrendingRSS/monthly/all.xml",
 ];
 
-export const getNews = async () => {
+export const getNews = async (feedUrls = newsFeedUrls) => {
   const feeds = await Promise.all(
-    newsFeedUrls.map((url) =>
+    feedUrls.map((url) =>
       parser
         .parseURL(url)
         .catch(() => console.error(new URL(url).host, " failed"))
