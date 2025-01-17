@@ -1,6 +1,18 @@
+---
+import { serializeUrls } from "../utils/url";
+
+const { list = "" } = Astro.params;
+---
+
 <nav class="flex gap-4 justify-end pb-10">
   <a href="/">News</a>
   <a href="/github">GitHub</a>
-  <a href="/custom">Custom</a>
+  {
+    list ? (
+      <a href={`/custom/${list}`}>Edit custom feed</a>
+    ) : (
+      <a href="/custom">Create custom feed</a>
+    )
+  }
   <a href="/preview">Preview</a>
 </nav>

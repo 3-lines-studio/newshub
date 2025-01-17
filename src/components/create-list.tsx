@@ -1,13 +1,9 @@
 import { useState } from "react";
-import { validateUrl } from "../utils/url";
+import { serializeUrls, validateUrl } from "../utils/url";
 
-function serializeUrls(urls: string[]) {
-  return btoa(urls.join(","));
-}
-
-export function CreateList() {
+export function CreateList({ list = [] }: { list: string[] }) {
   const [url, setUrl] = useState("");
-  const [urls, setUrls] = useState<string[]>([]);
+  const [urls, setUrls] = useState<string[]>(list);
 
   const addUrl = () => {
     const isValid = validateUrl(url);
@@ -39,16 +35,24 @@ export function CreateList() {
       </div>
 
       {urls.length > 0 && (
-        <div>
-          <a href={`/custom/${serializeUrls(urls)}`}>
-            Use this custom feed link
-          </a>
+        <div className="py-4">
+          <a href={`/feed/${serializeUrls(urls)}`}>Use this custom feed link</a>
         </div>
       )}
 
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-2">
         {urls.map((url) => (
-          <div key={url}>{url}</div>
+          <div key={url} className="flex justify-between">
+            <div className="">{url}</div>
+
+            <button
+              type="button"
+              className="inline-flex h-10 whitespace-nowrap rounded-lg text-sm px-5 py-2.5 me-2 bg-stone-600 hover:bg-stone-700 focus:outline-none focus:ring-stone-800"
+              onClick={() => setUrls(urls.filter((u) => u !== url))}
+            >
+              REMOVE
+            </button>
+          </div>
         ))}
       </div>
     </div>
