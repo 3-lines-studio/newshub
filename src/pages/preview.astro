@@ -1,22 +1,25 @@
 ---
+import { CreatePreview } from "../components/create-preview";
 import Navbar from "../components/navbar.astro";
-import Layout from "../layouts/Layout.astro";
+import Layout from "../layouts/layout.astro";
 import { preview } from "../utils/feed";
 
-const url = Astro.url.searchParams.get("link");
+const url = Astro.url.searchParams.get("link") ?? "";
 
-if (!url) {
-  return Astro.redirect("/");
-}
-
-const article = await preview(url);
+const article = url ? await preview(url) : undefined;
 ---
 
 <Layout>
   <Navbar />
 
-  <main class="flex flex-col mx-auto my-10 prose lg:prose-xl prose-invert">
-    <h1>{article?.title}</h1>
-    <article set:html={article?.content} />
-  </main>
+  {
+    article ? (
+      <main class="flex flex-col mx-auto my-10 prose lg:prose-xl prose-invert">
+        <h1>{article?.title}</h1>
+        <article set:html={article?.content} />
+      </main>
+    ) : (
+      <CreatePreview client:load />
+    )
+  }
 </Layout>

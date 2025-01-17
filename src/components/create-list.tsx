@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { validateUrl } from "../utils/url";
 
 function serializeUrls(urls: string[]) {
   return btoa(urls.join(","));
@@ -9,13 +10,11 @@ export function CreateList() {
   const [urls, setUrls] = useState<string[]>([]);
 
   const addUrl = () => {
-    try {
-      const validatedUrl = new URL(url);
+    const isValid = validateUrl(url);
 
-      setUrls([...new Set([...urls, validatedUrl.toString()])]);
+    if (isValid) {
+      setUrls([...new Set([...urls, url])]);
       setUrl("");
-    } catch {
-      //
     }
   };
 
@@ -24,6 +23,7 @@ export function CreateList() {
       <h1>Create a custom feed</h1>
       <div className="flex gap-2">
         <input
+          placeholder="Add one by one the feeds you want"
           className="text-sm rounded-lg block w-full p-2.5 border bg-stone-700 border-stone-600 placeholder-stone-400 text-white focus:ring-slate-700 focus:border-slate-700"
           value={url}
           onChange={(event) => setUrl(event.target.value)}
