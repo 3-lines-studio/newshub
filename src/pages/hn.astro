@@ -1,0 +1,14 @@
+---
+import Feed from "../components/feed.astro";
+import Navbar from "../components/navbar.astro";
+import Layout from "../layouts/layout.astro";
+import { getHn } from "../utils/feed";
+
+const items = await getHn();
+---
+
+<Layout>
+  <Navbar />
+
+  <Feed title="HackerNews" items={items} />
+</Layout>

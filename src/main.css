@@ -1,5 +1,5 @@
 html,
 body {
-  @apply text-stone-100 bg-stone-900;
-  font-family: Mate, serif;
+  @apply text-zinc-100 bg-zinc-900;
+  font-family: "Source Serif 4", serif;
 }

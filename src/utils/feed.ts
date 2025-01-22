@@ -15,7 +15,6 @@ const newsFeedUrls = [
   "https://techcrunch.com/feed",
   "https://www.theverge.com/rss/index.xml",
   "https://www.wired.com/feed/rss",
-  "https://hnrss.org/best",
 ];
 
 const reposFeedUrls = [
@@ -23,6 +22,8 @@ const reposFeedUrls = [
   "https://mshibanami.github.io/GitHubTrendingRSS/weekly/all.xml",
   "https://mshibanami.github.io/GitHubTrendingRSS/monthly/all.xml",
 ];
+
+const hnFeedUrls = ["https://hnrss.org/best"];
 
 export const getNews = cached(
   "news:",
@@ -62,6 +63,21 @@ export const getGithubTrending = cached("gh:", async () => {
   }
 
   return [...feedMap.values()].flatMap((feed) => feed?.items!);
+});
+
+export const getHn = cached("hn:", async (feedUrls: string[] = hnFeedUrls) => {
+  const feeds = await Promise.all(
+    feedUrls.map((url) =>
+      parser
+        .parseURL(url)
+        .catch(() => console.error(new URL(url).host, " failed"))
+    )
+  );
+
+  return feeds
+    .filter(Boolean)
+    .flatMap((feed) => feed?.items!)
+    .sort((a, b) => (dayjs(a.pubDate).isBefore(b.pubDate) ? 1 : -1));
 });
 
 export const preview = cached("preview:", async (url: string) => {
